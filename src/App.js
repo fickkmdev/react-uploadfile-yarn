@@ -18,23 +18,25 @@ function App() {
         )
       ))
     };
-
     getUsers();
   }, []);
 
   const addNewUser = async()=>{
     await addDoc(usersCollectionRef, {name:newName, p_number:newPhoneNumber})
+    alert("add user success")
   }
 
   const updateUser = async(id, p_number)=>{
     const userDoc = doc(db, "users", id)
     const newField = {p_number: p_number+"+"}
     await updateDoc(userDoc, newField)
+    alert("update user success")
   }
 
   const deleteUser = async(id)=>{
     const userDoc = doc(db, "users", id)
     await deleteDoc(userDoc)
+    alert("delete user success")
   }
 
   return (
