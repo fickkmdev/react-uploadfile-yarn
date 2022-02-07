@@ -8,7 +8,8 @@ function App() {
   const [newPhoneNumber, setNewPhoneNumber] = useState("")
   const [users, setUsers] = useState([]);
   const usersCollectionRef = collection(db, "users");
-
+  const [hidden, setHidden] = useState(false)
+  const [status, setStatus] = useState(true)
   useEffect(() => {
     const getUsers = async () => {
       const data = await getDocs(usersCollectionRef);
@@ -19,69 +20,80 @@ function App() {
       ))
     };
     getUsers();
-  }, []);
+  }, [status]);
 
   const addNewUser = async()=>{
     await addDoc(usersCollectionRef, {name:newName, p_number:newPhoneNumber})
-    alert("add user success")
+    //alert("add user success")
+    setStatus(!status)
   }
 
   const updateUser = async(id, p_number)=>{
     const userDoc = doc(db, "users", id)
     const newField = {p_number: p_number+"+"}
     await updateDoc(userDoc, newField)
-    alert("update user success")
+    //alert("update user success")
+    setStatus(!status)
   }
 
   const deleteUser = async(id)=>{
     const userDoc = doc(db, "users", id)
     await deleteDoc(userDoc)
-    alert("delete user success")
+    //alert("delete user success")
+    setStatus(!status)
   }
 
-  return (
-    <div className="App">
-      <input
-        placeholder='name'
-        type={'text'}
-        onChange={(event)=>{
-          setNewName(event.target.value)
+    return (
+      <div className="App">
+        <input
+          placeholder='name'
+          type={'text'}
+          onChange={(event)=>{
+            setNewName(event.target.value)
+          }}
+        />
+        {" "}
+        <input
+          placeholder='phone number'
+          type={'text'}
+          onChange={(event)=>{
+            setNewPhoneNumber(event.target.value)
+          }}
+        />
+        {" "}
+        <button
+          onClick={addNewUser}>
+          Add
+        </button>
+        <button
+        onClick={()=>{
+          setHidden(!hidden)
+          console.log(hidden)
         }}
-      />
-      {" "}
-      <input
-        placeholder='phone number'
-        type={'text'}
-        onChange={(event)=>{
-          setNewPhoneNumber(event.target.value)
-        }}
-      />
-      {" "}
-      <button
-        onClick={addNewUser}>
-        Add
-      </button>
-      {users.map((user) => {
-        return (
-          <div>
-            {" "}
-            <p>Name: {user.name}</p>
-            <p>Phone number: {user.p_number}</p>
-            <button
-              onClick={()=>{
-                updateUser(user.id, user.p_number)
-              }}
-            >update</button>{" "}
-            <button
-              onClick={()=>{
-                deleteUser(user.id)
-              }}
-            >delete</button>
-          </div>
-        )
-      })}
-    </div>
-  );
+        >
+          Hide
+        </button>
+        {!hidden && users.map((user, index) => {
+          return (
+            <div key={index}>
+              {" "}
+              <p>Name: {user.name}</p>
+              <p>Phone number: {user.p_number}</p>
+              <button
+                onClick={()=>{
+                  updateUser(user.id, user.p_number)
+                }}
+              >update</button>{" "}
+              <button
+                onClick={()=>{
+                  deleteUser(user.id)
+                }}
+              >delete</button>
+            </div>
+          )
+        })}
+      </div>
+    );
 }
 
 export default App;
