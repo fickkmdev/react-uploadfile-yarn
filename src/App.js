@@ -26,6 +26,8 @@ function App() {
     await addDoc(usersCollectionRef, {name:newName, p_number:newPhoneNumber})
     //alert("add user success")
     setStatus(!status)
+    setNewName("")
+    setNewPhoneNumber("")
   }
 
   const updateUser = async(id, p_number)=>{
@@ -46,6 +48,7 @@ function App() {
     return (
       <div className="App">
         <input
+        value={newName}
           placeholder='name'
           type={'text'}
           onChange={(event)=>{
@@ -54,6 +57,7 @@ function App() {
         />
         {" "}
         <input
+        value={newPhoneNumber}
           placeholder='phone number'
           type={'text'}
           onChange={(event)=>{
