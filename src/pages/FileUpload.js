@@ -5,10 +5,16 @@ import { storage } from '../db-config/firebase-config';
 function FileUpload() {
 
     const [uploadProgress, setUploadProgress] = useState(0)
-    const [file, setFile] = useState(null)
     const [url, setUrl] = useState('')
 
-    const uploadFile = () => {
+    const formHandeler = (e) => {
+        e.preventDefault();
+        const file = e.target[0].files[0]
+        console.log(file)
+        uploadFile(file)
+    }
+
+    const uploadFile = (file) => {
         console.log(file)
         if (!file) return;
         const storageRef = ref(storage, `/product/${file.name}`);
@@ -21,31 +27,36 @@ function FileUpload() {
                 alert(error)
             },
             () => {
-                getDownloadURL(uploadTask.snapshot.ref).then((url)=>alert(`success!! URL: ${url}`))
+                getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+                    setUrl(url)
+                })
             }
         );
-        }
-
-    const handleFile = (e) =>{
-        if(e.target.files[0]){
-            setFile(e.target.files[0]);
-        }
     }
+
+
 
     return (
         <div>
             <h1>FileUpload</h1>
-            <form>
+            <form onSubmit={formHandeler}>
                 <input
                     style={{ border: "solid 1px coral" }}
                     type='file'
-                    onChange={handleFile}
+                    onChange={(e) => {
+                        console.log(e.target.files[0])
+                    }}
                 />
                 <button
-                    onClick={uploadFile}
+                    type='submit'
                 >upload</button>
             </form>
             <p>upload progress : {uploadProgress} %</p>
+            {url ? <><h1>Success!!</h1>
+            <img src={url}
+            style={{width:'100%'}}
+            />
+            </>: <></>}
         </div>
     )
 }
